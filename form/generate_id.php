@@ -46,6 +46,10 @@ $results = Joiningtables($id);
 
     .container {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .id-card {
@@ -59,12 +63,14 @@ $results = Joiningtables($id);
         display: inline-block;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         font-size: 10px;
+        margin-bottom: 10px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .header {
         text-align: center;
         font-size: 8px;
-        font-weight: bold;
         text-transform: uppercase;
         margin-bottom: 2px;
         line-height: 1.2;
@@ -76,6 +82,7 @@ $results = Joiningtables($id);
         font-size: 14px;
         font-weight: bold;
         margin-bottom: 8px;
+        margin-top: 15px;
     }
 
     .photo-box {
@@ -111,29 +118,32 @@ $results = Joiningtables($id);
     .signature {
         position: absolute;
         bottom: 6px;
-        left: 6px;
+        left: 10px;
+        width: 40mm;
         font-size: 8px;
+        text-align: center;
     }
 
     .signature .line {
         display: block;
-        width: 50mm;
+        width: 40mm;
         border-top: 1px solid black;
-        margin-top: 2px;
+        margin: 0 auto 2px auto;
     }
 
     .logo {
+        display: flex;
         position: absolute;
         top: 3px;
         left: 5px;
-        width: 18mm;
+        width: 15mm;
     }
 
     .right-logo {
         position: absolute;
         top: 3px;
         right: 5px;
-        width: 18mm;
+        width: 15mm;
     }
     .bottom-logo {
         position: absolute;
@@ -160,6 +170,30 @@ $results = Joiningtables($id);
     .btn:hover {
         background-color: #0056b3;
     }
+
+    /* Hide print buttons and navigation when printing */
+    @media print {
+        .btn, .back-btn {
+            display: none !important;
+        }
+        body {
+            height: auto;
+        }
+        .container {
+            display: block !important;
+        }
+        #idCardBack {
+            display: block !important;
+            page-break-before: always;
+        }
+    }
+
+    /* Hidden by default and only shown during print */
+    #idCardBack {
+        display: none;
+        position: absolute;
+        visibility: hidden;
+    }
     </style>
 </head>
 <body>
@@ -167,15 +201,15 @@ $results = Joiningtables($id);
     <div class="container">
         <?php if (!empty($results)): ?>
             <?php foreach ($results as $row): ?>
-                <div class="id-card" id="idCard">
+                <div class="id-card" id="idCardFront">
                     <img src="http://localhost/solo_parent/form/img/logo3.png" alt="Left Logo" class="logo">
                     <img src="http://localhost/solo_parent/form/img/logo4.jpg" alt="Right Logo" class="right-logo">
                     
                     <div class="header">
-                        REPUBLIC OF THE PHILIPPINES<br>
+                        <span style="font-weight:bold;">REPUBLIC OF THE PHILIPPINES</span><br>
                         CITY OF CEBU<br>
                         DEPARTMENT OF SOCIAL WELFARE SERVICES
-                    </div><br><br>
+                    </div>
                     <div class="erp-title">ERPAT</div>
 
                     <div class="photo-box">PHOTO</div>
@@ -189,7 +223,8 @@ $results = Joiningtables($id);
                     </div>
 
                     <div class="signature">
-                        SIGNATURE:<br><span class="line"></span>
+                        <span class="line"></span>
+                        SIGNATURE:
                     </div>
                     <div class="card">
                         <img src="http://localhost/solo_parent/form/img/logo1.png" alt="Below Logo" class="bottom-logo">
@@ -200,6 +235,8 @@ $results = Joiningtables($id);
             <p>No records found.</p>
         <?php endif; ?>
 
+        <div id="idCardBack"></div>
+
         <br>
         <a href="back_id.php?id=<?php echo $id; ?>" class="btn">View Back of ID</a>
         <button class="btn" onclick="printID()">Print ID</button>
@@ -207,11 +244,36 @@ $results = Joiningtables($id);
 
     <script>
     function printID() {
-        var printContents = document.getElementById("idCard").outerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
+        var id = <?php echo json_encode($id); ?>;
+        var backDiv = document.getElementById('idCardBack');
+        
+        // Create a clone of the back ID card for printing
+        fetch('back_id.php?id=' + id + '&print=1')
+            .then(response => response.text())
+            .then(backHtml => {
+                // Store original body content
+                var originalBody = document.body.innerHTML;
+                
+                // Create print-specific content
+                var printContent = `
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        ${document.getElementById('idCardFront').outerHTML}
+                        <div style="page-break-before:always;">
+                            ${backHtml}
+                        </div>
+                    </div>
+                `;
+                
+                // Replace body content for printing
+                document.body.innerHTML = printContent;
+                
+                // Print and then restore original content
+                window.print();
+                document.body.innerHTML = originalBody;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
     </script>
 </body>
