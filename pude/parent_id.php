@@ -36,86 +36,94 @@ if (empty($gen_id)) {
     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <style>
+        @media print {
+            .no-print, .no-print * {
+                display: none !important;
+            }
+            body { background: #fff !important; }
+            .border-gray-400 { border-color: #888 !important; }
+            .bg-white { background: #fff !important; }
+            .bg-red-600 { background: #dc2626 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .text-white { color: #fff !important; }
+            .table, .table th, .table td {
+                background: #fff !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+
 </head>
 
 <body class="flex items-center justify-center min-h-screen w-screen bg-gray-100">
     <div class="flex flex-col items-center">
         <!-- ID Card Container -->
-        <div class="border border-gray-400 p-4 w-full max-w-md bg-white">
-            <div class="flex justify-between items-center mb-2">
-                <img alt="Official Seal of Cebu" class="h-12 w-12" height="50" src="img/cityhall_logo.png" width="50"/>
-                <div class="text-center">
-                    <h1 class="text-sm font-bold">REPUBLIC OF THE PHILIPPINES</h1>
-                    <h2 class="text-sm">CITY OF CEBU</h2>
-                    <h3 class="text-sm">DEPARTMENT OF SOCIAL WELFARE SERVICES</h3>
+        <div class="border border-gray-400 bg-white flex flex-col justify-between p-2 w-[3.5in] h-[2.5in]">
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <img alt="Official Seal of Cebu" class="h-[0.5in] w-[0.5in]" src="img/cityhall_logo.png"/>
+                    <div class="text-center">
+                        <h1 class="text-[0.09in] font-bold leading-tight">REPUBLIC OF THE PHILIPPINES</h1>
+                        <h2 class="text-[0.09in] leading-tight">CITY OF CEBU</h2>
+                        <h3 class="text-[0.09in] leading-tight">DEPARTMENT OF SOCIAL WELFARE SERVICES</h3>
+                    </div>
+                    <img alt="DSWD Seal" class="h-[0.5in] w-[0.5in]" src="img/dsws logo.png"/>
                 </div>
-                <img alt="DSWD Seal" class="h-12 w-12" height="50" src="img/dsws logo.png" width="50"/>
-            </div>
-            <div class="bg-red-600 text-white text-center py-1 mb-2">
-                <h4 class="text-sm font-bold">SOLO PARENT IDENTIFICATION CARD</h4>
-            </div>
-            <div class="flex mb-2">
-            <div class="border border-gray-400 flex items-center justify-center" style="width: 135px; height: 128px;">
-
-                    <span class="text-xs">1x1 ID picture</span>
+                <div class="bg-red-600 text-white text-center py-1 mb-1">
+                    <h4 class="text-[0.12in] font-bold tracking-wide">SOLO PARENT IDENTIFICATION CARD</h4>
                 </div>
-                <div class="ml-4">
-                    <p class="text-xs">
-                        <span class="font-bold">ID NO:</span>
-                        <?php echo isset($gen_id[0]['id_no']) ? htmlspecialchars($gen_id[0]['id_no']) : "N/A"; ?>
-                    </p>
-                    <br>
-                    <p class="text-xs" style="margin-bottom:5px;">
-                        <span class="font-bold">NAME:</span>
-                        <?php echo isset($gen_id[0]['fullname']) ? htmlspecialchars($gen_id[0]['fullname']) : "N/A"; ?>
-                    </p>
-                    <p class="text-xs" style="margin-bottom:5px;">
-                        <span class="font-bold">Address:</span>
-                        <?php echo isset($gen_id[0]['address']) ? htmlspecialchars($gen_id[0]['address']) : "N/A"; ?>
-                    </p>
-                    <p class="text-xs" style="margin-bottom:5px;">
-                        <span class="font-bold">Solo Parent Category:</span>
-                        <?php echo !empty($gen_id[0]['solo_parent_category']) ? htmlspecialchars($gen_id[0]['solo_parent_category']) : "N/A"; ?>
-                    </p>
-                    <p class="text-xs" style="margin-bottom:5px;">
-                        <span class="font-bold">Benefit Qualification Code:</span>
-                        <?php echo isset($gen_id[0]['beneficiary_code']) ? htmlspecialchars($gen_id[0]['beneficiary_code']) : "N/A"; ?>
+                <div class="flex mb-1">
+                    <div class="border border-gray-400 flex items-center justify-center w-[2.5cm] h-[2.5cm] bg-gray-50 text-[0.11in] text-gray-600 mr-3">
+                        1x1 ID picture
+                    </div>
+                    <div class="ml-3 text-[0.09in]">
+                        <p class="mb-1"><span class="font-bold">ID NO:</span>
+                            <?php echo isset($gen_id[0]['id_no']) ? htmlspecialchars($gen_id[0]['id_no']) : "N/A"; ?>
+                        </p>
+                        <p class="mb-1"><span class="font-bold">NAME:</span>
+                            <?php echo isset($gen_id[0]['fullname']) ? htmlspecialchars($gen_id[0]['fullname']) : "N/A"; ?>
+                        </p>
+                        <p class="mb-1"><span class="font-bold">Address:</span>
+                            <?php echo isset($gen_id[0]['address']) ? htmlspecialchars($gen_id[0]['address']) : "N/A"; ?>
+                        </p>
+                        <p class="mb-1"><span class="font-bold">Solo Parent Category:</span>
+                            <?php echo !empty($gen_id[0]['solo_parent_category']) ? htmlspecialchars($gen_id[0]['solo_parent_category']) : "N/A"; ?>
+                        </p>
+                        <p class="mb-0.1"><span class="font-bold">Benefit Qualification Code:</span>
+                            <?php echo isset($gen_id[0]['beneficiary_code']) ? htmlspecialchars($gen_id[0]['beneficiary_code']) : "N/A"; ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="flex absolute left-70 justify-between items-end text-[0.10in] mt-[1px]">
+                    <p class="m-1 text-left ">
+                       <br> Signature or thumbprint of solo parent
                     </p>
                 </div>
-
+                <div class="flex justify-between items-center text-[0.10in] mt-[1px]">
+                    <p class="m-1">
+                        <br><br>This card is non-transferable and valid until
+                        <span class="font-bold">10-22-2025</span>
+                    </p>
+                </div>
             </div>
-            <div class="text-xs mb-2 flex justify-between items-center" style="margin-top:15px;">
-                <p style="margin: 0;">     
-                    This card is non-transferable <br>and valid until
-                    <span class="font-bold">10-22-2025</span>
-                </p>
-                <p style="margin: 0;">
-                    Signature or thumbprint of solo parent
-                </p>
-            </div>
-
-<div class="flex justify-end items-center mt-2">
-<img alt="Bagong Pilipinas Logo" class="h-15 w-15" height="60" src="img/bagongPilipinas.png" width="60"/>
-
-</div>
-
-
-
-
-
-
-      
-
-</div>
-
-     <!-- Print Button Below the Container -->
- <div class="mt-4 w-full max-w-md text-left">
-    <a href="back_id.php?id=<?= urlencode($id_no) ?>">
-        <button type="submit" class="btn btn-success" name="submit" style="margin-left: 10px;">Next</button>
-    </a>
-    <button onclick="window.print()" class="btn btn-primary" style="margin-left: 10px;">Print</button>
-</div>
-
-</div>
+        </div>
+        <div class="flex justify-end items-center mt-[-65px] mr-[-250px]">
+            <img alt="Bagong Pilipinas Logo" class="h-[0.6in] w-[0.6in] ml-" src="img/bagongPilipinas.png"/>
+        </div>
+        <!-- Print Button Below the Container -->
+        <div class="mt-4 w-full max-w-md text-left no-print">
+            <a href="back_id.php?id=<?= urlencode($id_no) ?>">
+                <button type="submit" class="btn btn-success" name="submit" style="margin-left: 10px;">Next</button>
+            </a>
+            <button onclick="window.print()" class="btn btn-primary" style="margin-left: 10px;">Print</button>
+            <a href="index.php">
+                <button type="button" class="btn btn-secondary ml-2">Go to Solo Parent</button>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

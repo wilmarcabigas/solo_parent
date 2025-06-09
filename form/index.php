@@ -33,6 +33,9 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
+    <a href="/solo_parent/main_menu.php">
+                <button type="button" class="btn btn-secondary ml-2">menu</button>
+            </a>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Data Entry Table</h1>
         <div class="mb-3 text-end">
