@@ -10,7 +10,6 @@ if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
 $id = (int) $_GET["id"]; // Ensure it's an integer
 $results = Joiningtables($id);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +39,7 @@ $results = Joiningtables($id);
         border-radius: 4px;
         transition: 0.3s;
     }
+
     .back-btn:hover {
         background-color: #0056b3;
     }
@@ -59,13 +59,10 @@ $results = Joiningtables($id);
         border-radius: 8px;
         padding: 6px;
         background-color: white;
-        position: relative;
-        display: inline-block;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         font-size: 10px;
-        margin-bottom: 10px;
-        margin-left: auto;
-        margin-right: auto;
+        text-align: center;
+        position: relative;
     }
 
     .header {
@@ -77,7 +74,6 @@ $results = Joiningtables($id);
     }
 
     .erp-title {
-        text-align: center;
         color: red;
         font-size: 14px;
         font-weight: bold;
@@ -132,7 +128,6 @@ $results = Joiningtables($id);
     }
 
     .logo {
-        display: flex;
         position: absolute;
         top: 3px;
         left: 5px;
@@ -145,17 +140,18 @@ $results = Joiningtables($id);
         right: 5px;
         width: 15mm;
     }
+
     .bottom-logo {
         position: absolute;
         bottom: 10px;
         right: 10px;
-        width: 18mm; 
+        width: 18mm;
         height: auto;
     }
 
     .btn {
         display: inline-block;
-        margin-top: 10px;
+        margin: 5px 5px 0 5px;
         padding: 6px 10px;
         font-size: 12px;
         color: white;
@@ -171,28 +167,24 @@ $results = Joiningtables($id);
         background-color: #0056b3;
     }
 
-    /* Hide print buttons and navigation when printing */
     @media print {
         .btn, .back-btn {
             display: none !important;
         }
+
         body {
+            background-color: white;
             height: auto;
         }
+
         .container {
             display: block !important;
         }
-        #idCardBack {
-            display: block !important;
-            page-break-before: always;
-        }
-    }
 
-    /* Hidden by default and only shown during print */
-    #idCardBack {
-        display: none;
-        position: absolute;
-        visibility: hidden;
+        .id-card {
+            margin-bottom: 0 !important;
+            box-shadow: none;
+        }
     }
     </style>
 </head>
@@ -235,46 +227,97 @@ $results = Joiningtables($id);
             <p>No records found.</p>
         <?php endif; ?>
 
-        <div id="idCardBack"></div>
-
         <br>
         <a href="back_id.php?id=<?php echo $id; ?>" class="btn">View Back of ID</a>
         <button class="btn" onclick="printID()">Print ID</button>
     </div>
 
-    <script>
-    function printID() {
-        var id = <?php echo json_encode($id); ?>;
-        var backDiv = document.getElementById('idCardBack');
-        
-        // Create a clone of the back ID card for printing
-        fetch('back_id.php?id=' + id + '&print=1')
-            .then(response => response.text())
-            .then(backHtml => {
-                // Store original body content
-                var originalBody = document.body.innerHTML;
-                
-                // Create print-specific content
-                var printContent = `
-                    <div style="display:flex; flex-direction:column; align-items:center;">
-                        ${document.getElementById('idCardFront').outerHTML}
-                        <div style="page-break-before:always;">
+<script>
+function printID() {
+    const id = <?php echo json_encode($id); ?>;
+
+    fetch('back_id.php?id=' + id + '&print=1')
+        .then(response => response.text())
+        .then(backHtml => {
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>ERPAT ID Card Print</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                        .print-page {
+                            height: 100vh;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            align-items: center;
+                            page-break-after: always;
+                        }
+                        .id-card {
+                            width: 86mm;
+                            height: 54mm;
+                            border: 2px solid #000;
+                            border-radius: 8px;
+                            padding: 6px;
+                            background-color: white;
+                            position: relative;
+                            margin: 10px auto;
+                            font-size: 10px;
+                        }
+                        .front-card {
+                            margin-top: 100px;
+                        }
+                        .back-card {
+                            margin-bottom: 20px;
+                            margin-top: 10px;
+                        }
+                        ${document.querySelector('style').innerHTML}
+                        
+                        @media print {
+                            body {
+                            height: auto;
+                            background: white;
+                            margin: 0;
+                            padding: 0;
+                            }
+                            .print-page {
+                                page-break-after: always;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-page">
+                        <div class="front-card">
+                            ${document.getElementById('idCardFront').outerHTML}
+                        </div>
                             ${backHtml}
                         </div>
                     </div>
-                `;
-                
-                // Replace body content for printing
-                document.body.innerHTML = printContent;
-                
-                // Print and then restore original content
-                window.print();
-                document.body.innerHTML = originalBody;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-    </script>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                                window.close();
+                            }, 200);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+        })
+        .catch(error => {
+            console.error('Error fetching back ID:', error);
+        });
+}
+</script>
 </body>
 </html>
