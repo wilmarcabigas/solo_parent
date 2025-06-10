@@ -27,33 +27,11 @@ if (empty($gen_id)) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+   
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <style>
-        @media print {
-            .no-print, .no-print * {
-                display: none !important;
-            }
-            body { background: #fff !important; }
-            .border-gray-400 { border-color: #888 !important; }
-            .bg-white { background: #fff !important; }
-            .bg-red-600 { background: #dc2626 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .text-white { color: #fff !important; }
-            .table, .table th, .table td {
-                background: #fff !important;
-                color: #000 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
-    </style>
 
 </head>
 
@@ -115,13 +93,15 @@ if (empty($gen_id)) {
             <img alt="Bagong Pilipinas Logo" class="h-[0.6in] w-[0.6in] ml-" src="img/bagongPilipinas.png"/>
         </div>
         <!-- Print Button Below the Container -->
-        <div class="mt-4 w-full max-w-md text-left no-print">
+        <div class="mt-4 w-full max-w-md text-left">
             <a href="back_id.php?id=<?= urlencode($id_no) ?>">
-                <button type="submit" class="btn btn-success" name="submit" style="margin-left: 10px;">Next</button>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200" name="submit" >Back</button>
             </a>
-            <button onclick="window.print()" class="btn btn-primary" style="margin-left: 10px;">Print</button>
+            <a href="print_id.php?id=<?= urlencode($id_no) ?>">
+            <button   type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200" >Print</button>
+            </a>
             <a href="index.php">
-                <button type="button" class="btn btn-secondary ml-2">Go to Solo Parent</button>
+                <button type="button" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">Go to Solo Parent</button>
             </a>
         </div>
     </div>

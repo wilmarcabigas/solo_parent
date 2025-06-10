@@ -30,12 +30,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Child/Dependent Information</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-@media print {
-  .btn, .w-full.max-w-md { display: none !important; }
-  body { background: #fff !important; }
-}
-</style>
+   
 </head>
 
 <body class="flex items-center justify-center min-h-screen w-screen bg-gray-100">
@@ -97,16 +92,26 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
 
         <!-- Button Below Container -->
-        <div class="w-full max-w-md text-left mt-4 flex flex-wrap gap-2">
-            <a href="parent_id.php?id=<?= urlencode($id_no) ?>">
-                <button type="button" class="btn btn-success mr-2">Back</button>
-            </a>
-            <button onclick="window.print()" class="btn btn-primary ml-2">Print</button>
-            <a href="/solo_parent/index.php">
-                <button type="button" class="btn btn-secondary ml-2">Go to Solo Parent</button>
-            </a>
-        </div>
-    </div>
+<div class="w-full max-w-md text-left mt-4 flex flex-wrap gap-2 no-print">
+    <a href="parent_id.php?id=<?= urlencode($id_no) ?>">
+        <button type="button"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+            Front
+        </button>
+    </a>
+    <a href="print_id.php?id=<?= urlencode($id_no) ?>">
+        <button type="button"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+            Print
+        </button>
+    </a>
+    <a href="/solo_parent/index.php">
+        <button type="button"
+            class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+            Go to Solo Parent
+        </button>
+    </a>
+</div>
 </body>
 
 </html>
