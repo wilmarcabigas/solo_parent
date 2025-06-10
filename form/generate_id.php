@@ -10,7 +10,6 @@ if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
 $id = (int) $_GET["id"]; // Ensure it's an integer
 $results = Joiningtables($id);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,12 +39,17 @@ $results = Joiningtables($id);
         border-radius: 4px;
         transition: 0.3s;
     }
+
     .back-btn:hover {
         background-color: #0056b3;
     }
 
     .container {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .id-card {
@@ -55,27 +59,26 @@ $results = Joiningtables($id);
         border-radius: 8px;
         padding: 6px;
         background-color: white;
-        position: relative;
-        display: inline-block;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         font-size: 10px;
+        text-align: center;
+        position: relative;
     }
 
     .header {
         text-align: center;
         font-size: 8px;
-        font-weight: bold;
         text-transform: uppercase;
         margin-bottom: 2px;
         line-height: 1.2;
     }
 
     .erp-title {
-        text-align: center;
         color: red;
         font-size: 14px;
         font-weight: bold;
         margin-bottom: 8px;
+        margin-top: 15px;
     }
 
     .photo-box {
@@ -111,41 +114,44 @@ $results = Joiningtables($id);
     .signature {
         position: absolute;
         bottom: 6px;
-        left: 6px;
+        left: 10px;
+        width: 40mm;
         font-size: 8px;
+        text-align: center;
     }
 
     .signature .line {
         display: block;
-        width: 50mm;
+        width: 40mm;
         border-top: 1px solid black;
-        margin-top: 2px;
+        margin: 0 auto 2px auto;
     }
 
     .logo {
         position: absolute;
         top: 3px;
         left: 5px;
-        width: 18mm;
+        width: 15mm;
     }
 
     .right-logo {
         position: absolute;
         top: 3px;
         right: 5px;
-        width: 18mm;
+        width: 15mm;
     }
+
     .bottom-logo {
         position: absolute;
         bottom: 10px;
         right: 10px;
-        width: 18mm; 
+        width: 18mm;
         height: auto;
     }
 
     .btn {
         display: inline-block;
-        margin-top: 10px;
+        margin: 5px 5px 0 5px;
         padding: 6px 10px;
         font-size: 12px;
         color: white;
@@ -160,6 +166,26 @@ $results = Joiningtables($id);
     .btn:hover {
         background-color: #0056b3;
     }
+
+    @media print {
+        .btn, .back-btn {
+            display: none !important;
+        }
+
+        body {
+            background-color: white;
+            height: auto;
+        }
+
+        .container {
+            display: block !important;
+        }
+
+        .id-card {
+            margin-bottom: 0 !important;
+            box-shadow: none;
+        }
+    }
     </style>
 </head>
 <body>
@@ -167,15 +193,15 @@ $results = Joiningtables($id);
     <div class="container">
         <?php if (!empty($results)): ?>
             <?php foreach ($results as $row): ?>
-                <div class="id-card" id="idCard">
+                <div class="id-card" id="idCardFront">
                     <img src="http://localhost/solo_parent/form/img/logo3.png" alt="Left Logo" class="logo">
                     <img src="http://localhost/solo_parent/form/img/logo4.jpg" alt="Right Logo" class="right-logo">
                     
                     <div class="header">
-                        REPUBLIC OF THE PHILIPPINES<br>
+                        <span style="font-weight:bold;">REPUBLIC OF THE PHILIPPINES</span><br>
                         CITY OF CEBU<br>
                         DEPARTMENT OF SOCIAL WELFARE SERVICES
-                    </div><br><br>
+                    </div>
                     <div class="erp-title">ERPAT</div>
 
                     <div class="photo-box">PHOTO</div>
@@ -189,7 +215,8 @@ $results = Joiningtables($id);
                     </div>
 
                     <div class="signature">
-                        SIGNATURE:<br><span class="line"></span>
+                        <span class="line"></span>
+                        SIGNATURE:
                     </div>
                     <div class="card">
                         <img src="http://localhost/solo_parent/form/img/logo1.png" alt="Below Logo" class="bottom-logo">
@@ -205,14 +232,92 @@ $results = Joiningtables($id);
         <button class="btn" onclick="printID()">Print ID</button>
     </div>
 
-    <script>
-    function printID() {
-        var printContents = document.getElementById("idCard").outerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-    }
-    </script>
+<script>
+function printID() {
+    const id = <?php echo json_encode($id); ?>;
+
+    fetch('back_id.php?id=' + id + '&print=1')
+        .then(response => response.text())
+        .then(backHtml => {
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>ERPAT ID Card Print</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                        .print-page {
+                            height: 100vh;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            align-items: center;
+                            page-break-after: always;
+                        }
+                        .id-card {
+                            width: 86mm;
+                            height: 54mm;
+                            border: 2px solid #000;
+                            border-radius: 8px;
+                            padding: 6px;
+                            background-color: white;
+                            position: relative;
+                            margin: 10px auto;
+                            font-size: 10px;
+                        }
+                        .front-card {
+                            margin-top: 100px;
+                        }
+                        .back-card {
+                            margin-bottom: 20px;
+                            margin-top: 10px;
+                        }
+                        ${document.querySelector('style').innerHTML}
+                        
+                        @media print {
+                            body {
+                            height: auto;
+                            background: white;
+                            margin: 0;
+                            padding: 0;
+                            }
+                            .print-page {
+                                page-break-after: always;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-page">
+                        <div class="front-card">
+                            ${document.getElementById('idCardFront').outerHTML}
+                        </div>
+                            ${backHtml}
+                        </div>
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                                window.close();
+                            }, 200);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+        })
+        .catch(error => {
+            console.error('Error fetching back ID:', error);
+        });
+}
+</script>
 </body>
 </html>
