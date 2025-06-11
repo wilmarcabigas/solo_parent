@@ -338,7 +338,12 @@ public function Joining_Generate_ID($id)
     // Return the results (optional, depending on your application)
     return $p_order;
 }
-
+public function updateStatus($id, $status) {
+    $stmt = $this->conn->prepare("UPDATE solo_parent SET status = ? WHERE id = ?");
+    $stmt->bind_param("si", $status, $id);
+    $stmt->execute();
+    $stmt->close();
+}
 
 }
 ?>

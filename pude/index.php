@@ -74,15 +74,19 @@ $displayAll_Details = $db->getAllRecords("solo_parent");
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
+                        <th>Id No.</th>
                         <th>Name</th>
                         <th>Age</th>
                         <th>Sex</th>
                         <th class="no-print">Action</th>
+                        <th>Status</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($displayAll_Details as $row) : ?>
                         <tr>
+                            <td><?php echo $row["id"] ?></td>
                             <td><?php echo $row["id_no"] ?></td>
                             <td><?php echo $row["fullname"] ?></td>
                             <td><?php echo $row["age"] ?></td>
@@ -100,6 +104,13 @@ $displayAll_Details = $db->getAllRecords("solo_parent");
                                     </a>
                                 </div>
                             </td>
+                            <td>
+                <?php if (isset($row["status"]) && strtolower($row["status"]) == "approved"): ?>
+                    <span class="badge bg-success">Approved</span>
+                <?php else: ?>
+                    <span class="badge bg-warning text-dark">Pending</span>
+                <?php endif; ?>
+            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

@@ -105,7 +105,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             Print
         </button>
     </a>
-    <a href="/solo_parent/index.php">
+    <a href="/solo_parent/pude/index.php">
         <button type="button"
             class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
             Go to Solo Parent

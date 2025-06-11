@@ -103,6 +103,52 @@ $displayAll_Details = $db->Joiningtables($id);
         .btn:hover {
             opacity: 0.9;
         }
+         .btn-container {
+        text-align: center;
+        margin-top: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    .btn {
+        display: inline-block;
+        padding: 10px 24px;
+        text-decoration: none;
+        color: #fff;
+        border-radius: 5px;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    .btn-primary {
+        background-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+    }
+    .btn-danger:hover {
+        background-color: #a71d2a;
+    }
+    .btn-success {
+        background-color: #28a745;
+    }
+    .btn-success:hover {
+        background-color: #1e7e34;
+    }
+    .btn-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    .btn-warning:hover {
+        background-color: #e0a800;
+        color: #212529;
+    }
     </style>
 </head>
 <body>
@@ -215,9 +261,13 @@ $displayAll_Details = $db->Joiningtables($id);
 
         <!-- Action Buttons -->
         <div class="btn-container">
-            <a href="edit_form.php?id=<?= $row->id ?>" class="btn btn-primary">Update</a>
-            <a href="index.php" class="btn btn-danger">Back</a>
-        </div>
+    <a href="edit_form.php?id=<?= $row->id ?>" class="btn btn-primary">Update</a>
+    <a href="index.php" class="btn btn-danger">Back</a>
+    <a href="update_status.php?id=<?= $row->id ?>&status=approved" class="btn btn-success"
+       onclick="return confirm('Approve this application?');">Approve</a>
+    <a href="update_status.php?id=<?= $row->id ?>&status=pending" class="btn btn-warning"
+       onclick="return confirm('Disapprove this application?');">Disapprove</a>
+</div>
     </div>
 </body>
 </html>
