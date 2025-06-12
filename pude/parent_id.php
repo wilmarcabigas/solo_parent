@@ -97,7 +97,7 @@ if (empty($gen_id)) {
             <a href="back_id.php?id=<?= urlencode($id_no) ?>">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200" name="submit" >Back</button>
             </a>
-            <a href="print_id.php?id=<?= urlencode($id_no) ?>">
+            <a href="print_id.php?id=<?= urlencode($id_no) ?>" target="_blank" onclick="window.open(this.href, '_blank'); return false;">
             <button   type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200" >Print</button>
             </a>
             <a href="index.php">

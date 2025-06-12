@@ -99,7 +99,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             Front
         </button>
     </a>
-    <a href="print_id.php?id=<?= urlencode($id_no) ?>">
+    <a href="print_id.php?id=<?= urlencode($id_no) ?>" target="_blank" onclick="window.open(this.href, '_blank'); return false;">
         <button type="button"
             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
             Print

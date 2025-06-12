@@ -344,6 +344,9 @@ public function updateStatus($id, $status) {
     $stmt->execute();
     $stmt->close();
 }
-
+public function getConnection() {
+    return $this->conn;
 }
+}
+
 ?>
