@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #66ea71, #4ba276);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .register-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 5.0rem;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+      width: 370px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
+    }
+
+    .register-container:hover {
+      transform: scale(1.02);
+    }
+
+    .register-container h2 {
+      text-align: center;
+      margin-bottom: 1.8rem;
+      color: #2c9446;
+      font-size: 1.8rem;
+    }
+
+    .register-container input[type="text"],
+    .register-container input[type="email"],
+    .register-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 4px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .register-container input:focus {
+      border-color: #4ba276;
+      box-shadow: 0 0 0 3px rgba(75, 162, 118, 0.2);
+    }
+
+    .register-container input[type="submit"] {
+      width: 100px;
+      padding: 15px;
+      background-color: #3cb371;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <form class="register-container" action="register.php" method="POST">
+    <h2>Register Form</h2>
+    <input type="text" name="fullname" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required />
+    <input id="registerButton" type="submit" value="Register" />
+  </form>
+
+  <script>
+    const registerButton = document.getElementById('registerButton');
+
+    registerButton.addEventListener('mouseover', () => {
+      const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
+      registerButton.style.backgroundColor = randomColor;
+    });
+
+    registerButton.addEventListener('mouseout', () => {
+      registerButton.style.backgroundColor = '#3cb371'; // Reset to original color
+    });
+  </script>
+
+</body>
+</html>

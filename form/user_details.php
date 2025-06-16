@@ -50,6 +50,17 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     echo "<div class='alert alert-danger'>Invalid user ID.</div>";
     exit;
 }
+if (isset($_POST['action']) && isset($_POST['id'])) {
+    $validate = ($_POST['action'] === 'approve') ? 'approved' : 'pending';
+    $update_sql = "UPDATE registrations SET validate = :validate WHERE id = :id";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bindParam(':validate', $validate);
+    $update_stmt->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
+    $update_stmt->execute();
+    // Refresh to show updated status
+    header("Location: user_details.php?id=" . $_POST['id']);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -259,6 +270,14 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
         
         <a href="index.php" class="btn btn-primary">Back</a>
+        <form method="post" class="d-inline">
+    <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+    <?php if ($user['validate'] !== 'approved'): ?>
+        <button  onclick="return confirm('Approve this application?');" type="submit" name="action" value="approve" class="btn btn-success ml-2">Approve</button>
+    <?php endif; ?>
+    <?php if ($user['validate'] !== 'pending'): ?>
+        <button onclick="return confirm('Disapprove this application?');" type="submit" name="action" value="disapprove" class="btn btn-warning ml-2">Disapprove</button>
+    <?php endif; ?>
     </div>
     
 </body>
