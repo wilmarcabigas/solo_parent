@@ -2,11 +2,12 @@
 
 class DbHelper
 {
-    private $hostname = "127.0.0.1";
+    private $hostname = "localhost";
     private $username = "root";
     private $password = "";
     private $database = "solo_parent";
     private $conn;
+
 
     // Constructor to initialize the database connection
     public function __construct()
@@ -54,19 +55,19 @@ class DbHelper
     }
 
     // Method to get all records
-    public function getAllRecords($table)
-    {
+   public function getAllRecords($table, $where = "") {
         $sql = "SELECT * FROM `$table`";
+        if ($where) {
+            $sql .= " WHERE $where";
+        }
         $result = $this->conn->query($sql);
-        if ($result === false) {
-            die('MySQL query error: ' . $this->conn->error);
+        $records = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $records[] = $row;
+            }
         }
-
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        return $rows;
+        return $records;
     }
 
     // Method to get a single record

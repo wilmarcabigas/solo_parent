@@ -1,5 +1,5 @@
 <?php
-require_once "dbhelper.php";
+require_once "dbhelper-form.php";
 
 // Validate 'id' from GET request
 if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
@@ -37,7 +37,7 @@ $back_card = ob_get_clean();
         
     }
     .id-card {
-        width: 86mm;
+        width: 86mm;        
         height: 54mm;
         border: 2px solid #000;
         border-radius: 8px;

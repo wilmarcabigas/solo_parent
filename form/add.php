@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
-include "dbhelper.php";
+include "dbhelper-form.php";
 $_SESSION['form_token'] = bin2hex(random_bytes(32));
 ?>
 <!DOCTYPE html>

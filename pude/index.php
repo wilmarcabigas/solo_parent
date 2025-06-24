@@ -1,9 +1,16 @@
 <?php
+
 require_once "./util/dbhelper.php";
 $db = new DbHelper();
-
 $displayAll_Details = $db->getAllRecords("solo_parent");
-
+$filter = isset($_GET['filter']) ? $_GET['filter'] : '';
+if ($filter == 'pending') {
+    $displayAll_Details = $db->getAllRecords("solo_parent", "status = 'Pending'");
+} elseif ($filter == 'approved') {
+    $displayAll_Details = $db->getAllRecords("solo_parent", "status = 'Approved'");
+} else {
+    $displayAll_Details = $db->getAllRecords("solo_parent");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,10 +24,6 @@ $displayAll_Details = $db->getAllRecords("solo_parent");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-
-
-    <!-- ...existing head code... -->
     <style>
         .btn.btn-info.btn-sm {
             background-color: #F3DADF !important;
@@ -34,7 +37,6 @@ $displayAll_Details = $db->getAllRecords("solo_parent");
             background-color: #FDA481 !important;
             border: none;
         }
-        /* Hide elements with .no-print when printing */
         @media print {
             .no-print, .no-print * {
                 display: none !important;
@@ -54,72 +56,100 @@ $displayAll_Details = $db->getAllRecords("solo_parent");
             }
         }
     </style>
-</>
+</head>
 <body>
     <a href="/solo_parent/main_menu.php" class="no-print">
         <button type="button" class="btn btn-secondary ml-2">menu</button>
     </a>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Solo Parent Data</h1>
-        <div class="mb-3 text-end no-print">
-            <a href="app_form.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add New Entry
-            </a>
-            <a href="log_in.php" class="btn btn-primary">
-                <i></i>Log Out
-            </a>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Id No.</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Sex</th>
-                        <th class="no-print">Action</th>
-                        <th>Status</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($displayAll_Details as $row) : ?>
+        <form method="post" action="multi_print.php" target="_blank" id="multiPrintForm">
+            <div class="mb-3 text-end no-print">
+                <a href="app_form.php" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Entry
+                </a>
+                <a href="log_in\login.php" class="btn btn-primary">
+                    <i></i>Log Out
+                </a>
+                <button type="submit" class="btn btn-danger" id="multiPrintBtn" disabled>
+                    <i class="fas fa-print"></i> Multi Print
+                </button>
+            </div>
+            <div class="mb-3 text-center no-print">
+                <a href="index.php" class="btn btn-secondary btn-sm me-2">Show All</a>
+                <a href="index.php?filter=pending" class="btn btn-warning btn-sm me-2">Show Pending</a>
+                <a href="index.php?filter=approved" class="btn btn-success btn-sm">Show Approved</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
                         <tr>
-                            <td><?php echo $row["id"] ?></td>
-                            <td><?php echo $row["id_no"] ?></td>
-                            <td><?php echo $row["fullname"] ?></td>
-                            <td><?php echo $row["age"] ?></td>
-                            <td><?php echo $row["sex"] ?></td>
-                            <td class="text-center no-print">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a href="view.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                    <a href="delete_info.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                    <a href="parent_id.php?id=<?php echo urlencode($row['id']); ?>" style='font-size:24px'>
-                                        <i class='far fa-id-card'></i>
-                                    </a>
-                                </div>
-                            </td>
-                            <td>
-                <?php if (isset($row["status"]) && strtolower($row["status"]) == "approved"): ?>
-                    <span class="badge bg-success">Approved</span>
-                <?php else: ?>
-                    <span class="badge bg-warning text-dark">Pending</span>
-                <?php endif; ?>
-            </td>
+                            <th class="no-print">
+                                <input type="checkbox" id="selectAll">
+                            </th>
+                            <th>ID</th>
+                            <th>Id No.</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Sex</th>
+                            <th class="no-print">Action</th>
+                            <th>Status</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($displayAll_Details as $row) : ?>
+                            <tr>
+                                <td class="no-print">
+                                    <input type="checkbox" name="ids[]" value="<?php echo htmlspecialchars($row["id"]); ?>" class="row-checkbox">
+                                </td>
+                                <td><?php echo $row["id"] ?></td>
+                                <td><?php echo $row["id_no"] ?></td>
+                                <td><?php echo $row["fullname"] ?></td>
+                                <td><?php echo $row["age"] ?></td>
+                                <td><?php echo $row["sex"] ?></td>
+                                <td class="text-center no-print">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="view.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <a href="delete_info.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                        <a href="parent_id.php?id=<?php echo urlencode($row['id']); ?>" style='font-size:24px'>
+                                            <i class='far fa-id-card'></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php if (isset($row["status"]) && strtolower($row["status"]) == "approved"): ?>
+                                        <span class="badge bg-success">Approved</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </form>
     </div>
-
     <!-- Bootstrap JS (Optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Enable/disable Multi Print button
+    function updateMultiPrintBtn() {
+        const anyChecked = Array.from(document.querySelectorAll('.row-checkbox')).some(cb => cb.checked);
+        document.getElementById('multiPrintBtn').disabled = !anyChecked;
+    }
+    document.getElementById('selectAll').addEventListener('change', function() {
+        let checked = this.checked;
+        document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = checked);
+        updateMultiPrintBtn();
+    });
+    document.querySelectorAll('.row-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateMultiPrintBtn);
+    });
+    </script>
 </body>
-
 </html>

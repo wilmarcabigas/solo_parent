@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 try {
     // Database connection using PDO
-    $conn = new PDO('mysql:host=127.0.0.1;dbname=form', 'root', '');
+    $conn = new PDO('mysql:host=127.0.0.1;dbname=solo_parent', 'root', '');
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());

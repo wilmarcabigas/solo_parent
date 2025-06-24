@@ -1,5 +1,5 @@
 <?php
-include "dbhelper.php"; // Assuming this file contains the PDO connection
+include "dbhelper-form.php"; // Assuming this file contains the PDO connection
 
 // Check if the ID is set and is a valid integer
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {

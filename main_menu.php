@@ -1,8 +1,18 @@
 <?php
+session_start();
 // Connect to your database
 require_once "pude/util/dbhelper.php";
 $db = new DbHelper();
 
+
+if (
+    !isset($_SESSION["user_id"]) ||
+    !isset($_SESSION["role"]) ||
+    $_SESSION["role"] !== "user"
+) {
+    header("Location: /solo_parent/pude/log_in/login.php");
+    exit();
+}
 $conn = $db->getConnection();
 $total_members = $conn->query("SELECT COUNT(*) FROM solo_parent")->fetch_row()[0];
 $total_men = $conn->query("SELECT COUNT(*) FROM solo_parent WHERE sex = 'Male'")->fetch_row()[0];

@@ -1,5 +1,5 @@
 <?php
-require_once "dbhelper.php";
+require_once "dbhelper-form.php";
 
 if (!isset($id)) {
     // If included directly, fallback to $_GET
