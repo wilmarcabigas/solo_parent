@@ -2,15 +2,17 @@
 
 require_once "./util/dbhelper.php";
 $db = new DbHelper();
-$displayAll_Details = $db->getAllRecords("solo_parent");
+
 $filter = isset($_GET['filter']) ? $_GET['filter'] : '';
+
+$where = [];
 if ($filter == 'pending') {
-    $displayAll_Details = $db->getAllRecords("solo_parent", "status = 'Pending'");
+    $where[] = "status = 'Pending'";
 } elseif ($filter == 'approved') {
-    $displayAll_Details = $db->getAllRecords("solo_parent", "status = 'Approved'");
-} else {
-    $displayAll_Details = $db->getAllRecords("solo_parent");
+    $where[] = "status = 'Approved'";
 }
+$whereSql = $where ? implode(' AND ', $where) : '';
+$displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,10 +78,15 @@ if ($filter == 'pending') {
                 </button>
             </div>
             <div class="mb-3 text-center no-print">
+                <!-- Instant search form (no submit) -->
+                <form class="mb-3 no-print d-flex justify-content-end" id="searchForm" onsubmit="return false;">
+                    <input type="text" id="instantSearch" class="form-control w-auto me-2" placeholder="Search...">
+                </form>
                 <a href="index.php" class="btn btn-secondary btn-sm me-2">Show All</a>
                 <a href="index.php?filter=pending" class="btn btn-warning btn-sm me-2">Show Pending</a>
                 <a href="index.php?filter=approved" class="btn btn-success btn-sm">Show Approved</a>
             </div>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead class="table-dark">
@@ -149,6 +156,15 @@ if ($filter == 'pending') {
     });
     document.querySelectorAll('.row-checkbox').forEach(cb => {
         cb.addEventListener('change', updateMultiPrintBtn);
+    });
+
+    // Instant JS search/filter
+    document.getElementById('instantSearch').addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            row.style.display = rowText.includes(searchValue) ? '' : 'none';
+        });
     });
     </script>
 </body>
