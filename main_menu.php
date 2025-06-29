@@ -55,7 +55,10 @@ $women_count = $total_women;
         <i class="fas fa-user mr-2"></i> Solo Parent
     </a>
     <a href="../solo_parent/form/index.php" class="block py-2 px-4 mb-4 rounded hover:bg-white hover:text-black">
-        <i class="fas fa-clipboard-list mr-2"></i> Registration Form
+        <i class="fas fa-clipboard-list mr-2"></i> Registration Form   
+    </a>
+    <a href="pude/log_in/login.php" class="block py-2 px-4 mb-4 rounded hover:bg-white hover:text-black btn btn-primary">
+    <i class="fas fa-sign-out-alt"></i> Log Out
     </a>
 </div>
         <!-- Main Content -->
@@ -108,7 +111,9 @@ $women_count = $total_women;
                 </div>
             </div>
         </div>
+        
     </div>
+    
     <script>
         // Bar Chart: Registrations per Month
         const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
@@ -148,5 +153,6 @@ $women_count = $total_women;
             }
         });
     </script>
+  
 </body>
 </html>

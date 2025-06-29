@@ -1,5 +1,6 @@
 <?php
 
+
 require_once "./util/dbhelper.php";
 $db = new DbHelper();
 
@@ -7,9 +8,11 @@ $filter = isset($_GET['filter']) ? $_GET['filter'] : '';
 
 $where = [];
 if ($filter == 'pending') {
-    $where[] = "status = 'Pending'";
+    $where[] = "LOWER(status) = 'pending'";
 } elseif ($filter == 'approved') {
-    $where[] = "status = 'Approved'";
+    $where[] = "LOWER(status) = 'approved'";
+} elseif ($filter == 'dis-approved') {
+    $where[] = "LOWER(status) = 'dis-approved'";
 }
 $whereSql = $where ? implode(' AND ', $where) : '';
 $displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
@@ -32,11 +35,11 @@ $displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
             border: none;
         }
         .btn.btn-danger.btn-sm {
-            background-color: #274D60 !important;
+            background-color:rgb(149, 35, 31)5!important;
             border: none;
         }
         .btn.btn-success {
-            background-color: #FDA481 !important;
+            background-color:green !important;
             border: none;
         }
         @media print {
@@ -70,21 +73,20 @@ $displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
                 <a href="app_form.php" class="btn btn-success">
                     <i class="fas fa-plus"></i> Add New Entry
                 </a>
-                <a href="log_in\login.php" class="btn btn-primary">
-                    <i></i>Log Out
-                </a>
+                
                 <button type="submit" class="btn btn-danger" id="multiPrintBtn" disabled>
-                    <i class="fas fa-print"></i> Multi Print
+                    <i class="fas fa-print" ></i> Multi Print
                 </button>
             </div>
             <div class="mb-3 text-center no-print">
                 <!-- Instant search form (no submit) -->
-                <form class="mb-3 no-print d-flex justify-content-end" id="searchForm" onsubmit="return false;">
-                    <input type="text" id="instantSearch" class="form-control w-auto me-2" placeholder="Search...">
-                </form>
+                <div class="mb-3 no-print d-flex justify-content-start " id="searchForm">
+    <input type="text" id="instantSearch" class="form-control w-auto me-2" placeholder="Search...">
+</div>
                 <a href="index.php" class="btn btn-secondary btn-sm me-2">Show All</a>
                 <a href="index.php?filter=pending" class="btn btn-warning btn-sm me-2">Show Pending</a>
-                <a href="index.php?filter=approved" class="btn btn-success btn-sm">Show Approved</a>
+                <a href="index.php?filter=approved" class="btn btn-success btn-sm me-2">Show Approved</a>
+                <a href="index.php?filter=dis-approved" class="btn btn-danger btn-sm">Show Dis-Approved</a>
             </div>
 
             <div class="table-responsive">
@@ -92,7 +94,7 @@ $displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
                     <thead class="table-dark">
                         <tr>
                             <th class="no-print">
-                                <input type="checkbox" id="selectAll">
+                                <input type="checkbox" name="ids[]" id="selectAll">
                             </th>
                             <th>ID</th>
                             <th>Id No.</th>
@@ -105,37 +107,40 @@ $displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
                     </thead>
                     <tbody>
                         <?php foreach ($displayAll_Details as $row) : ?>
-                            <tr>
-                                <td class="no-print">
-                                    <input type="checkbox" name="ids[]" value="<?php echo htmlspecialchars($row["id"]); ?>" class="row-checkbox">
-                                </td>
-                                <td><?php echo $row["id"] ?></td>
-                                <td><?php echo $row["id_no"] ?></td>
-                                <td><?php echo $row["fullname"] ?></td>
-                                <td><?php echo $row["age"] ?></td>
-                                <td><?php echo $row["sex"] ?></td>
-                                <td class="text-center no-print">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="view.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                        <a href="delete_info.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </a>
-                                        <a href="parent_id.php?id=<?php echo urlencode($row['id']); ?>" style='font-size:24px'>
-                                            <i class='far fa-id-card'></i>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <?php if (isset($row["status"]) && strtolower($row["status"]) == "approved"): ?>
-                                        <span class="badge bg-success">Approved</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-warning text-dark">Pending</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+    <tr>
+        <td class="no-print">
+            <input type="checkbox" name="ids[]" value="<?php echo htmlspecialchars($row["id"]); ?>" class="row-checkbox">
+        </td>
+        <td><?php echo $row["id"] ?></td>
+        <td><?php echo $row["id_no"] ?></td>
+        <td><?php echo $row["fullname"] ?></td>
+        <td><?php echo $row["age"] ?></td>
+        <td><?php echo $row["sex"] ?></td>
+        <td class="text-center no-print">
+            <div class="d-flex justify-content-center gap-2">
+                <a href="view.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">
+                    <i class="fas fa-eye"></i> View
+                </a>
+                <a href="delete_info.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+                <a href="parent_id.php?id=<?php echo urlencode($row['id']); ?>" style='font-size:24px'>
+                    <i class='far fa-id-card'></i>
+                </a>
+                
+            </div>
+        </td>
+      <td>
+    <?php if (isset($row["status"]) && strtolower($row["status"]) == "approved"): ?>
+    <span class="badge bg-success">Approved</span>
+<?php elseif (isset($row["status"]) && strtolower($row["status"]) == "dis-approved"): ?>
+    <span class="badge bg-danger">Dis-Approved</span>
+<?php else: ?>
+    <span class="badge bg-warning text-dark">Pending</span>
+<?php endif; ?>
+</td>
+    </tr>
+<?php endforeach; ?>
                     </tbody>
                 </table>
             </div>

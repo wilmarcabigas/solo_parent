@@ -1,6 +1,5 @@
 <?php
 
-
 require_once "./util/dbhelper.php";
 $dbHelper = new DbHelper();
 

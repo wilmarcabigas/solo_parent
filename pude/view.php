@@ -97,7 +97,7 @@ $displayAll_Details = $db->Joiningtables($id);
         }
 
         .btn-danger {
-            background-color: #dc3545;
+            background-color:rgb(149, 35, 31)5;
         }
 
         .btn:hover {
@@ -265,7 +265,7 @@ $displayAll_Details = $db->Joiningtables($id);
     <a href="index.php" class="btn btn-danger">Back</a>
     <a href="update_status.php?id=<?= $row->id ?>&status=approved" class="btn btn-success"
        onclick="return confirm('Approve this application?');">Approve</a>
-    <a href="update_status.php?id=<?= $row->id ?>&status=pending" class="btn btn-warning"
+    <a href="update_status.php?id=<?= $row->id ?>&status=dis-approved" class="btn btn-warning"
        onclick="return confirm('Disapprove this application?');">Disapprove</a>
 </div>
     </div>

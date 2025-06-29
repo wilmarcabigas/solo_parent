@@ -10,31 +10,32 @@ $_SESSION['form_token'] = bin2hex(random_bytes(32));
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styleadd.css">
     <title>Empowerment and Reaffirmation of Paternal Abilities Registration Form</title>
 </head>
 
 <body class="bg-light">
 <div class="container my-5 p-5 bg-white shadow rounded">
-   <div class="d-flex justify-content-between mb-4">
+   <div class="d-flex justify-content-between mb-4 align-items-center">
         <img src="http://localhost/solo_parent/form/img/logo1.png" class="img-solid" style="max-height: 90px;">
         <img src="http://localhost/solo_parent/form/img/logo2.jpg" class="img-solid" style="max-height: 90px;">
-
-        <h6 class="text-center mb-4">REPUBLIC OF THE PHILIPPINES<br>CITY OF CEBU<br>DEPARTMENT OF SOCIAL WELFARE AND SERVICES</h6>
-
+        <h6 class="text-center mb-0" style="font-size:1.1rem;">
+            REPUBLIC OF THE PHILIPPINES<br>
+            CITY OF CEBU<br>
+            DEPARTMENT OF SOCIAL WELFARE AND SERVICES
+        </h6>
         <img src="http://localhost/solo_parent/form/img/logo3.png" class="img-solid" style="max-height: 70px;">
         <img src="http://localhost/solo_parent/form/img/logo4.jpg" class="img-solid" style="max-height: 70px;">
-
     </div>
 
     <h1 class="text-center mb-4">Empowerment and Reaffirmation of Paternal Abilities Registration Form</h1>
-<br><br><nr>
     <form action="registered.php" method="POST">
         <input type="hidden" name="token" value="<?php echo $_SESSION['form_token']; ?>">
 
         <!-- Identifying Data -->
         <h4 class="mt-4">IDENTIFYING DATA</h4>
         <div class="row g-3">
-        <div class="col-md-6">
+            <div class="col-md-6">
                 <label for="idno" class="form-label">ID Number:</label>
                 <input type="number" class="form-control" name="idno" required>
             </div>
@@ -61,7 +62,7 @@ $_SESSION['form_token'] = bin2hex(random_bytes(32));
                     <option value="in a relationship">In a Relationship</option>
                     <option value="married">Married</option>
                     <option value="separated">Separated</option>
-                    <option value="separated">Widowed</option>
+                    <option value="widowed">Widowed</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -85,34 +86,28 @@ $_SESSION['form_token'] = bin2hex(random_bytes(32));
                 <input type="text" class="form-control" name="religion">
             </div>
             <div class="col-md-6">
-                <label for="contact_no" class="form-label">Contact No:</label><br>
-                <input type="number" class="form-control" name="contact_no"><br>
-            </div><br><br>
-           
+                <label for="contact_no" class="form-label">Contact No:</label>
+                <input type="number" class="form-control" name="contact_no">
+            </div>
             <div class="col-md-12">
                 <label for="pantawid" class="form-label">Are you A Pantawid?</label>
                 <select class="form-select" name="pantawid">
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
-                  
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="icoe" class="form-label">In Case Of Emergency:</label>
                 <input type="text" class="form-control" name="icoe">
             </div>
-            <div>
             <div class="col-md-6">
                 <label for="icoecontact_no" class="form-label">Contact No:</label>
                 <input type="number" class="form-control" name="icoecontact_no">
-</div>
             </div>
-        
         </div>
 
         <!-- Family Composition -->
         <h4 class="mt-4">FAMILY COMPOSITION</h4>
-       
         <table class="table table-bordered" id="familyTable">
             <thead class="table-light">
                 <tr>
@@ -203,48 +198,45 @@ $_SESSION['form_token'] = bin2hex(random_bytes(32));
             </div>
         </div>
 
-      
         <!-- Seminars and Trainings -->
         <h4 class="mt-4">SEMINARS AND TRAININGS</h4>
-    
-    <table class="table table-bordered mt-4" id="seminarTable">
-        <thead class="table-light">
-            <tr>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Organizer</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><input type="text" class="form-control" name="seminar_title[]"></td>
-                <td><input type="date" class="form-control" name="seminar_date[]"></td>
-                <td><input type="text" class="form-control" name="seminar_organizer[]"></td>
-                <td><button type="button" class="btn btn-danger" onclick="deleteSeminar(this)">Delete</button></td>
-            </tr>
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-secondary mb-4" onclick="addSeminar()">Add Seminar</button>
-</div>
+        <table class="table table-bordered mt-4" id="seminarTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Organizer</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="form-control" name="seminar_title[]"></td>
+                    <td><input type="date" class="form-control" name="seminar_date[]"></td>
+                    <td><input type="text" class="form-control" name="seminar_organizer[]"></td>
+                    <td><button type="button" class="btn btn-danger" onclick="deleteSeminar(this)">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-secondary mb-4" onclick="addSeminar()">Add Seminar</button>
 
-<script>
-    function addSeminar() {
-        var table = document.getElementById("seminarTable").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow();
-        newRow.innerHTML = `
-            <td><input type="text" class="form-control" name="seminar_title[]"></td>
-            <td><input type="date" class="form-control" name="seminar_date[]"></td>
-            <td><input type="text" class="form-control" name="seminar_organizer[]"></td>
-            <td><button type="button" class="btn btn-danger" onclick="deleteSeminar(this)">Delete</button></td>
-        `;
-    }
+        <script>
+            function addSeminar() {
+                var table = document.getElementById("seminarTable").getElementsByTagName('tbody')[0];
+                var newRow = table.insertRow();
+                newRow.innerHTML = `
+                    <td><input type="text" class="form-control" name="seminar_title[]"></td>
+                    <td><input type="date" class="form-control" name="seminar_date[]"></td>
+                    <td><input type="text" class="form-control" name="seminar_organizer[]"></td>
+                    <td><button type="button" class="btn btn-danger" onclick="deleteSeminar(this)">Delete</button></td>
+                `;
+            }
 
-    function deleteSeminar(button) {
-        var row = button.closest('tr');
-        row.remove();
-    }
-</script>
+            function deleteSeminar(button) {
+                var row = button.closest('tr');
+                row.remove();
+            }
+        </script>
 
         <div class="mt-4">
             <button type="submit" class="btn btn-primary w-100" id="submitBtn">Submit Registration</button>
