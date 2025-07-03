@@ -143,62 +143,63 @@ class DbHelper
 {
     $sql = "
         SELECT 
-    solo_parent.id, 
-    solo_parent.fullname,
-    solo_parent.id_no,
-    solo_parent.philsys_card_number,
-    solo_parent.date_of_birth,
-    solo_parent.age,
-    solo_parent.place_of_birth,
-    solo_parent.sex,
-    solo_parent.address,
-    solo_parent.civil_status,
-    solo_parent.educational_attainment,
-    solo_parent.occupation,
-    solo_parent.religion,
-    solo_parent.company_agency,
-    solo_parent.monthly_income,
-    solo_parent.employment_status,
-    solo_parent.contact_number,
-    solo_parent.email_address,
-    solo_parent.pantawid_beneficiary,
-    solo_parent.indigenous_person,
-    solo_parent.are_you_a_migrant_worker,
-    solo_parent.lgbtq,
-    GROUP_CONCAT(
-        CONCAT(
-            familymembers.id, '|',
-            familymembers.name, '|',
-            familymembers.sex, '|',
-            familymembers.relationship, '|',
-            familymembers.age, '|',
-            familymembers.birthdate, '|',
-            familymembers.civil_status, '|',
-            familymembers.educational_attainment, '|',
-            familymembers.occupation, '|',
-            familymembers.monthly_income, '|',
-            familymembers.solo_parent_reason, '|',
-            familymembers.solo_parent_needs, '|',
-            familymembers.emer_name, '|',
-            familymembers.emer_relationship, '|',
-            familymembers.emer_address, '|',
-            familymembers.emer_contact_num, '|',
-            familymembers.solo_parent_card_number, '|',
-            familymembers.date_issuances, '|',
-            familymembers.solo_parent_category, '|',
-            familymembers.beneficiary_code
-        )
-        SEPARATOR ';'
-    ) AS familymembers_data
-FROM 
-    solo_parent
-LEFT JOIN 
-    familymembers ON familymembers.user_id = solo_parent.id
-WHERE 
-    solo_parent.id = ?
-GROUP BY 
-    solo_parent.id;
-
+            solo_parent.id, 
+            solo_parent.fullname,
+            solo_parent.id_no,
+            solo_parent.philsys_card_number,
+            solo_parent.date_of_birth,
+            solo_parent.age,
+            solo_parent.place_of_birth,
+            solo_parent.sex,
+            solo_parent.address,
+            solo_parent.civil_status,
+            solo_parent.educational_attainment,
+            solo_parent.occupation,
+            solo_parent.religion,
+            solo_parent.company_agency,
+            solo_parent.monthly_income,
+            solo_parent.employment_status,
+            solo_parent.contact_number,
+            solo_parent.email_address,
+            solo_parent.pantawid_beneficiary,
+            solo_parent.indigenous_person,
+            solo_parent.are_you_a_migrant_worker,
+            solo_parent.lgbtq,
+            solo_parent.date_registered,
+            solo_parent.approved_by,
+            GROUP_CONCAT(
+                CONCAT(
+                    familymembers.id, '|',
+                    familymembers.name, '|',
+                    familymembers.sex, '|',
+                    familymembers.relationship, '|',
+                    familymembers.age, '|',
+                    familymembers.birthdate, '|',
+                    familymembers.civil_status, '|',
+                    familymembers.educational_attainment, '|',
+                    familymembers.occupation, '|',
+                    familymembers.monthly_income, '|',
+                    familymembers.solo_parent_reason, '|',
+                    familymembers.solo_parent_needs, '|',
+                    familymembers.emer_name, '|',
+                    familymembers.emer_relationship, '|',
+                    familymembers.emer_address, '|',
+                    familymembers.emer_contact_num, '|',
+                    familymembers.solo_parent_card_number, '|',
+                    familymembers.date_issuances, '|',
+                    familymembers.solo_parent_category, '|',
+                    familymembers.beneficiary_code
+                )
+                SEPARATOR ';'
+            ) AS familymembers_data
+        FROM 
+            solo_parent
+        LEFT JOIN 
+            familymembers ON familymembers.user_id = solo_parent.id
+        WHERE 
+            solo_parent.id = ?
+        GROUP BY 
+            solo_parent.id;
     ";
 
     $stmt = $this->conn->prepare($sql);
@@ -246,7 +247,6 @@ GROUP BY
                     'date_issuances' => $member_details[17],
                     'solo_parent_category' => $member_details[18],
                     'beneficiary_code' => $member_details[19],
-                    
                 );
             }
 

@@ -19,9 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION["role"] = $user["role"];
         $_SESSION["email"] = $user["email"];
         if ($user["role"] === "admin") {
-            header(header: "Location: /solo_parent/main_menu.php");
+            header( "Location: /solo_parent/main_menu.php");
         } else {
-            header(header: "Location: /solo_parent/main_menu.php");
+            header("Location: /solo_parent/pude/user_dashboard.php");
         }
         exit();
     } else {

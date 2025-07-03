@@ -1,62 +1,106 @@
 <?php
+session_start();
 include "data_connect.php";
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: log_in/login.php");
+    exit();
+}
+$user_id = $_SESSION['user_id'];
+
+// Validate and get the entry ID
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("ID is not provided in the URL.");
 }
-$id = intval($_GET['id']); // Sanitize ID
+$id = intval($_GET['id']);
 
+// Fetch the record and check ownership
+$sql = "SELECT * FROM `solo_parent` WHERE id = $id LIMIT 1";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+
+if (!$row || ($row['user_id'] != $user_id && (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'))) {
+    die("You are not authorized to edit this entry.");
+}
+
+// Handle update logic
 if (isset($_POST['submit'])) {
-    $fullname = $_POST['fullname'];
-    $id_no = $_POST['id_no'];
-    $philsys_card_number = $_POST['philsys_card_number'];
-    $date_of_birth = $_POST['date_of_birth'];
-    $age = $_POST['age'];
-    $place_of_birth = $_POST['place_of_birth'];
-    $sex = $_POST['sex'];
-    $address = $_POST['address'];
-    $civil_status = $_POST['civil_status'];
-    $educational_attainment = $_POST['educational_attainment'];
-    $occupation = $_POST['occupation'];
-    $religion = $_POST['religion'];
-    $company_agency = $_POST['company_agency'];
-    $monthly_income = $_POST['monthly_income'];
-    $employment_status = $_POST['employment_status'];
-    $contact_number = $_POST['contact_number'];
-    $email_address = $_POST['email_address'];
-    $pantawid_beneficiary = $_POST['pantawid_beneficiary'];
-    $indigenous_person = $_POST['indigenous_person'];
-    $are_you_a_migrant_worker = $_POST['are_you_a_migrant_worker'];
-    $lgbtq = $_POST['lgbtq'];
+    // Collect and sanitize fields
+    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
+    $id_no = mysqli_real_escape_string($conn, $_POST['id_no']);
+    $philsys_card_number = mysqli_real_escape_string($conn, $_POST['philsys_card_number']);
+    $date_of_birth = mysqli_real_escape_string($conn, $_POST['date_of_birth']);
+    $age = mysqli_real_escape_string($conn, $_POST['age']);
+    $place_of_birth = mysqli_real_escape_string($conn, $_POST['place_of_birth']);
+    $sex = mysqli_real_escape_string($conn, $_POST['sex']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $civil_status = mysqli_real_escape_string($conn, $_POST['civil_status']);
+    $educational_attainment = mysqli_real_escape_string($conn, $_POST['educational_attainment']);
+    $occupation = mysqli_real_escape_string($conn, $_POST['occupation']);
+    $religion = mysqli_real_escape_string($conn, $_POST['religion']);
+    $company_agency = mysqli_real_escape_string($conn, $_POST['company_agency']);
+    $monthly_income = mysqli_real_escape_string($conn, $_POST['monthly_income']);
+    $employment_status = isset($_POST['employment_status']) ? mysqli_real_escape_string($conn, $_POST['employment_status']) : '';
+    $contact_number = mysqli_real_escape_string($conn, $_POST['contact_number']);
+    $email_address = mysqli_real_escape_string($conn, $_POST['email_address']);
+    $pantawid_beneficiary = isset($_POST['pantawid_beneficiary']) ? mysqli_real_escape_string($conn, $_POST['pantawid_beneficiary']) : '';
+    $indigenous_person = isset($_POST['indigenous_person']) ? mysqli_real_escape_string($conn, $_POST['indigenous_person']) : '';
+    $are_you_a_migrant_worker = isset($_POST['are_you_a_migrant_worker']) ? mysqli_real_escape_string($conn, $_POST['are_you_a_migrant_worker']) : '';
+    $lgbtq = isset($_POST['lgbtq']) ? mysqli_real_escape_string($conn, $_POST['lgbtq']) : '';
 
-    $sql = "UPDATE `solo_parent`
-        SET `fullname`='$fullname', `id_no`='$id_no', `philsys_card_number`='$philsys_card_number',
-        `date_of_birth`='$date_of_birth', `age`='$age', `place_of_birth`='$place_of_birth',
-        `sex`='$sex', `address`='$address', `civil_status`='$civil_status',
-        `educational_attainment`='$educational_attainment', `occupation`='$occupation',
-        `religion`='$religion', `company_agency`='$company_agency',
-        `monthly_income`='$monthly_income', `employment_status`='$employment_status',
-        `contact_number`='$contact_number', `email_address`='$email_address',
-        `pantawid_beneficiary`='$pantawid_beneficiary', `indigenous_person`='$indigenous_person',
-        `are_you_a_migrant_worker`='$are_you_a_migrant_worker', `lgbtq`='$lgbtq'
-        WHERE id = $id";
-
-    if (mysqli_query($conn, $sql)) {
-        header("Location: index.php?message=Updated Data successfully");
+    // Only require if Yes
+    if ($pantawid_beneficiary === 'yes' && empty($pantawid_household_id)) {
+        echo "<div class='alert alert-danger'>Please enter Household ID #.</div>";
+    } elseif ($indigenous_person === 'yes' && empty($indigenous_affiliation)) {
+        echo "<div class='alert alert-danger'>Please enter Name of Affiliation.</div>";
     } else {
-        echo "Update Failed: " . mysqli_error($conn);
+        // Admin can update any entry, user can only update their own
+        $where = "id = $id";
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+            $where .= " AND user_id = $user_id";
+        }
+        $sql = "UPDATE `solo_parent` SET 
+            fullname='$fullname',
+            id_no='$id_no',
+            philsys_card_number='$philsys_card_number',
+            date_of_birth='$date_of_birth',
+            age='$age',
+            place_of_birth='$place_of_birth',
+            sex='$sex',
+            address='$address',
+            civil_status='$civil_status',
+            educational_attainment='$educational_attainment',
+            occupation='$occupation',
+            religion='$religion',
+            company_agency='$company_agency',
+            monthly_income='$monthly_income',
+            employment_status='$employment_status',
+            contact_number='$contact_number',
+            email_address='$email_address',
+            pantawid_beneficiary='$pantawid_beneficiary',
+            indigenous_person='$indigenous_person',
+            are_you_a_migrant_worker='$are_you_a_migrant_worker',
+            lgbtq='$lgbtq'
+            WHERE $where";
+        if (mysqli_query($conn, $sql)) {
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                header("Location: index.php?msg=Updated successfully");
+            } else {
+                header("Location: user_dashboard.php?msg=Updated successfully");
+            }
+            exit();
+        } else {
+            echo "Update failed: " . mysqli_error($conn);
+        }
     }
 }
 
+// Fetch the updated row for the form
 $sql = "SELECT * FROM `solo_parent` WHERE id = $id LIMIT 1";
 $result = mysqli_query($conn, $sql);
-
-if (!$result || mysqli_num_rows($result) == 0) {
-    die("No record found for the provided ID.");
-}
 $row = mysqli_fetch_assoc($result);
 ?>
-
 
 
 
@@ -112,7 +156,7 @@ $row = mysqli_fetch_assoc($result);
         
         ?>
 
-            <form action="" method="post" stye="width:50vw; min-width:250px;">
+            <form action="" method="post" style="width:50vw; min-width:250px;">
                     <div class="col-sm-4.5 my-1" style="margin-left: 58.5%;">
                         <label style="font-weight: bold;" class="form-label"></label>
                         <input type="text" class="form-control" name="id_no" placeholder="ID NO:" required
@@ -205,7 +249,7 @@ $row = mysqli_fetch_assoc($result);
                     </div>
                     
                     <div style="margin-top: 28px;" class="mb-4">
-                        <label style="font-weight: bold;">Employment Status:</label> &nbsp; &nbsp;
+                        <label style="font-weight: bold;" class="form-label">Employment Status:</label> &nbsp; &nbsp;
                         
                         <input type="radio" class="form-check-input" name="employment_status"
                             id="employed" value="employed" <?php if ($row['employment_status'] == 'employed') echo 'checked="checked"'; ?>>
@@ -263,38 +307,16 @@ $row = mysqli_fetch_assoc($result);
                     <div style="margin-top: 28px;" class="mb-4">
                         <label style="font-weight: bold;" class="form-label">Pantawid Beneficiary ?</label>&nbsp;&nbsp;
                         <input type="radio" class="form-check-input" name="pantawid_beneficiary"
-                        id="yes" value="yes" <?php if ($row['pantawid_beneficiary'] == 'yes') echo 'checked="checked"'; ?>>
-                        <label style="font-weight: bold;" for="yes" class="form-input-label">Yes</label>
+                        id="pantawid_yes" value="yes" <?php if ($row['pantawid_beneficiary'] == 'yes') echo 'checked="checked"'; ?>>
+                        <label style="font-weight: bold;" for="pantawid_yes" class="form-input-label">Yes</label>
                         &nbsp; &nbsp;
                         <input type="radio" class="form-check-input" name="pantawid_beneficiary"
-                        id="no" value="no" <?php if ($row['pantawid_beneficiary'] == 'no') echo 'checked="checked"'; ?>>
-                        <label style="font-weight: bold;" for="no" class="form-input-label">No</label>
-                        
-                        <div class="col">
-                            <label style="font-weight: bold;" class="form-label">If Yes, Household ID #</label>
-                            <input type="text" class="form-control" name="if_yes_house_hold_id" required>
-                        </div>
+                        id="pantawid_no" value="no" <?php if ($row['pantawid_beneficiary'] == 'no') echo 'checked="checked"'; ?>>
+                        <label style="font-weight: bold;" for="pantawid_no" class="form-input-label">No</label>
                     </div>
-
                     <div style="margin-top: 10px;" class="mb-4">
-                        <label style="font-weight: bold;" class="form-label">Indigenous Person ?</label>&nbsp; &nbsp;
-                        <input type="radio" class="form-check-input" name="indigenous_person"
-                        id="yes" value="yes" <?php if ($row['indigenous_person'] == 'yes') echo 'checked="checked"'; ?>>
-                        <label style="font-weight: bold;" for="yes" class="form-input-label">Yes</label>
-                        &nbsp; &nbsp;
-                        <input type="radio" class="form-check-input" name="indigenous_person"
-                        id="no" value="no" <?php if ($row['indigenous_person'] == 'no') echo 'checked="checked"'; ?>>
-                        <label style="font-weight: bold;" for="no" class="form-input-label">No</label>
-                        
-                        <div class="col">
-                            <label style="font-weight: bold;" class="form-label">If Yes, Name of Affiliation:</label>
-                            <input type="text" class="form-control" name="if_yes_house_hold_id" required>
-                        </div>
-                    </div>
-                    <br>
-                    <div style="margin-top: 10px;"class="mb-4">
                         <button type="submit" class="btn btn-success" name="submit">Update Info</button>
-                        <a href="app_form2.php" class="btn btn-danger">Next</a>
+                        <a href="edit_form2.php?id=<?= $id ?>" class="btn btn-danger">Next</a>
                     </div>
                     </div>
                 </form>
@@ -316,6 +338,25 @@ $row = mysqli_fetch_assoc($result);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
     crossorigin="anonymous"></script>
+    <script>
+// Show/hide conditional fields based on radio selection
+$(document).ready(function() {
+    $('input[name="pantawid_beneficiary"]').change(function() {
+        if ($(this).val() === 'yes') {
+            $('#pantawid_household_id_div').show();
+        } else {
+            $('#pantawid_household_id_div').hide();
+        }
+    });
+    $('input[name="indigenous_person"]').change(function() {
+        if ($(this).val() === 'yes') {
+            $('#indigenous_affiliation_div').show();
+        } else {
+            $('#indigenous_affiliation_div').hide();
+        }
+    });
+});
+</script>
     
 </body>
 </html>

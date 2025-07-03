@@ -70,9 +70,7 @@ $displayAll_Details = $db->getAllRecords("solo_parent", $whereSql);
         <h1 class="text-center mb-4">Solo Parent Data</h1>
         <form method="post" action="multi_print.php" target="_blank" id="multiPrintForm">
             <div class="mb-3 text-end no-print">
-                <a href="app_form.php" class="btn btn-success">
-                    <i class="fas fa-plus"></i> Add New Entry
-                </a>
+                
                 
                 <button type="submit" class="btn btn-danger" id="multiPrintBtn" disabled>
                     <i class="fas fa-print" ></i> Multi Print

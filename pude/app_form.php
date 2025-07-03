@@ -1,8 +1,15 @@
 <?php
-
+session_start();
 include "data_connect.php";
 
+if (!isset($_SESSION['user_id'])) {
+    header("Location: log_in/login.php");
+    exit();
+}
+$user_id = $_SESSION['user_id'];
+
 if (isset($_POST['submit'])) {
+    // Collect all your form fields as usual
     $fullname = $_POST['fullname'];
     $id_no = $_POST['id_no'];
     $philsys_card_number = $_POST['philsys_card_number'];
@@ -25,23 +32,22 @@ if (isset($_POST['submit'])) {
     $are_you_a_migrant_worker = $_POST['are_you_a_migrant_worker'];
     $lgbtq = $_POST['lgbtq'];
 
-    $sql = "INSERT INTO `solo_parent`(`id`, `fullname`, `id_no`, `philsys_card_number`, `date_of_birth`, `age`, `place_of_birth`, `sex`, `address`, `civil_status`, `educational_attainment`, `occupation`, `religion`, `company_agency`, `monthly_income`, `employment_status`, `contact_number`, `email_address`, `pantawid_beneficiary`, `indigenous_person`, `are_you_a_migrant_worker`, `lgbtq`) 
-            VALUES (NULL, '$fullname', '$id_no', '$philsys_card_number', '$date_of_birth', '$age', '$place_of_birth', '$sex', '$address', '$civil_status', '$educational_attainment', '$occupation', '$religion', '$company_agency', '$monthly_income', '$employment_status', '$contact_number', '$email_address', '$pantawid_beneficiary', '$indigenous_person', '$are_you_a_migrant_worker', '$lgbtq')";
+    $sql = "INSERT INTO `solo_parent`(
+        `user_id`, `fullname`, `id_no`, `philsys_card_number`, `date_of_birth`, `age`, `place_of_birth`, `sex`, `address`, `civil_status`, `educational_attainment`, `occupation`, `religion`, `company_agency`, `monthly_income`, `employment_status`, `contact_number`, `email_address`, `pantawid_beneficiary`, `indigenous_person`, `are_you_a_migrant_worker`, `lgbtq`
+    ) VALUES (
+        '$user_id', '$fullname', '$id_no', '$philsys_card_number', '$date_of_birth', '$age', '$place_of_birth', '$sex', '$address', '$civil_status', '$educational_attainment', '$occupation', '$religion', '$company_agency', '$monthly_income', '$employment_status', '$contact_number', '$email_address', '$pantawid_beneficiary', '$indigenous_person', '$are_you_a_migrant_worker', '$lgbtq'
+    )";
 
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
-        // Get the last inserted ID
         $id = mysqli_insert_id($conn);
-
-        // Redirect to the next page with the ID
         header("Location: app_form2.php?id=" . $id);
-        exit(); // Always use exit after a header redirect
+        exit();
     } else {
         echo "Failed: " . mysqli_error($conn);
     }
 }
-
 ?>
 
 

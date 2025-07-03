@@ -62,8 +62,13 @@ if (isset($_POST['submit'])) {
     }
 
     if ($allSuccess) {
-        header("Location: index.php?msg=New Data Added Successfully!");
-        exit(); // Important to stop further script execution
+        session_start(); // Make sure session is started
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+            header("Location: index.php?msg=New Data Added Successfully!");
+        } else {
+            header("Location: user_dashboard.php?msg=New Data Added Successfully!");
+        }
+        exit();
     }
 }
 ?>

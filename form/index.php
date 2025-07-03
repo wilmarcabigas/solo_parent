@@ -58,29 +58,40 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <a href="?filter=disapproved" class="btn btn-outline-danger <?php if($filter=='disapproved') echo 'active'; ?>">Disapproved</a>
             <a href="?filter=pending" class="btn btn-outline-warning <?php if($filter=='pending') echo 'active'; ?>">Pending</a>
         </div>
-        <div class="mb-3 text-end">
-            <a href="add.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add New Entry
-            </a>
-        </div>
+   <div class="container mt-5">
+        <form method="post" action="multi_print_id.php" target="_blank" id="multiPrintForm">
+            <div class="mb-3 text-end no-print">
+                <a href="app_form.php" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Entry
+                </a>
+                <button type="submit" class="btn btn-danger" id="multiPrintBtn" disabled>
+                    <i class="fas fa-print" ></i> Multi Print
+                </button>
+            </div>
         
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Idno</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Sex</th>
-                        <th>Validate</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="no-print">
+                                <input type="checkbox" id="selectAll">
+                            </th>
+                            <th>ID</th>
+                            <th>Id No.</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Sex</th>
+                            <th>Status</th>
+                            <th class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                 <?php if (count($result) > 0): ?>
                     <?php foreach($result as $row): ?>
                         <tr id="user-<?php echo $row['id']; ?>">
+                            <td class="no-print">
+                                <input type="checkbox" class="row-checkbox" name="ids[]" value="<?php echo $row['id']; ?>">
+                            </td>
                             <td><?php echo $row["id"] ?></td>
                             <td><?php echo $row["idno"] ?></td>
                             <td><?php echo $row["name"] ?></td>
@@ -95,7 +106,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="text-center">
+                            <td class="text-center no-print">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="user_details.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">
                                         <i class="fas fa-eye"></i> View
@@ -103,8 +114,8 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <a href="delete_user.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">
                                         <i class="fas fa-trash"></i> Delete
                                     </a>
-                                    <a href="generate_id.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">
-                                        <i class="fas fa-id-card"></i> Generate ID
+                                    <a href="generate_id.php?id=<?php echo urlencode($row['id']); ?>" style='font-size:24px'>
+                                        <i class="fas fa-id-card"></i>
                                     </a>
                                 </div>
                             </td>
@@ -112,7 +123,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="7" class="text-center">No registered users found.</td>
+                        <td colspan="8" class="text-center">No registered users found.</td>
                     </tr>
                 <?php endif; ?>
                 </tbody>
@@ -120,7 +131,26 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <script>
+        // Enable/disable Multi Print button based on checkbox selection
         $(document).ready(function() {
+            // Select all checkboxes
+            $('#selectAll').on('change', function() {
+                $('.row-checkbox').prop('checked', this.checked);
+                $('#multiPrintBtn').prop('disabled', $('.row-checkbox:checked').length === 0);
+            });
+
+            // Enable Multi Print button if any checkbox is checked
+            $(document).on('change', '.row-checkbox', function() {
+                $('#multiPrintBtn').prop('disabled', $('.row-checkbox:checked').length === 0);
+                // If any checkbox is unchecked, uncheck selectAll
+                if (!this.checked) {
+                    $('#selectAll').prop('checked', false);
+                } else if ($('.row-checkbox:checked').length === $('.row-checkbox').length) {
+                    $('#selectAll').prop('checked', true);
+                }
+            });
+
+            // Optional: AJAX delete (if you want to keep it)
             $('.deleteUser').on('click', function() {
                 var userId = $(this).data('id');
                 if (confirm('Are you sure you want to delete this Registration?')) {
